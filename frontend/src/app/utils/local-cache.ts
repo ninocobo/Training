@@ -1,6 +1,7 @@
 import { SessionDoc } from '../models/session.model';
 
 const STORAGE_KEY = 'rutina_sessions';
+const ACTIVE_DAY_KEY = 'rutina_active_day';
 
 function readAll(): Record<string, SessionDoc> {
   try {
@@ -35,4 +36,20 @@ export function localGetPrevious(day: string, excludeId: string): SessionDoc | n
     .map(([, doc]) => doc)
     .sort((a, b) => b.date.localeCompare(a.date));
   return list[0] ?? null;
+}
+
+export function localGetActiveDay(): string | null {
+  try {
+    return localStorage.getItem(ACTIVE_DAY_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function localSaveActiveDay(dayId: string): void {
+  try {
+    localStorage.setItem(ACTIVE_DAY_KEY, dayId);
+  } catch {
+    /* almacenamiento no disponible: seguimos sin recordar el día */
+  }
 }

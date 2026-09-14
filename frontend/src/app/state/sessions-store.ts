@@ -4,7 +4,13 @@ import { getDay } from '../data/routine';
 import { DaySpec, SaveStatus, SessionDoc } from '../models/session.model';
 import { SessionsService } from '../services/sessions.service';
 import { defaultDayForToday, sessionId, todayISO } from '../utils/format';
-import { localGetPrevious, localGetSession, localSaveSession } from '../utils/local-cache';
+import {
+  localGetActiveDay,
+  localGetPrevious,
+  localGetSession,
+  localSaveActiveDay,
+  localSaveSession,
+} from '../utils/local-cache';
 import { ensureLength } from '../utils/sets';
 
 function emptySession(dayId: string, dateISO: string): SessionDoc {
@@ -15,7 +21,7 @@ function emptySession(dayId: string, dateISO: string): SessionDoc {
 export class SessionsStore {
   private readonly api = inject(SessionsService);
 
-  private readonly _activeDay = signal<string>(defaultDayForToday());
+  private readonly _activeDay = signal<string>(localGetActiveDay() ?? defaultDayForToday());
   private readonly _dateISO = signal<string>(todayISO());
   private readonly _today = signal<SessionDoc>(emptySession(this._activeDay(), this._dateISO()));
   private readonly _previous = signal<SessionDoc | null>(null);
@@ -52,6 +58,7 @@ export class SessionsStore {
     const dateISO = todayISO();
 
     this._activeDay.set(dayId);
+    localSaveActiveDay(dayId);
     this._dateISO.set(dateISO);
     this._today.set(emptySession(dayId, dateISO));
     this._previous.set(null);
