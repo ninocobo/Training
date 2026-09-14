@@ -1,0 +1,52 @@
+<div class="mx-auto max-w-xl px-4 pb-32">
+  <header class="sticky top-0 z-10 -mx-4 border-b border-line bg-bg px-4 pb-2.5 pt-4">
+    <div class="mb-3 flex items-baseline justify-between gap-2">
+      <h1 class="font-display text-2xl font-bold uppercase tracking-wide">Rutina</h1>
+      <span class="text-right text-[0.78rem] capitalize text-ink-dim">{{ todayLabel() }}</span>
+    </div>
+
+    <div class="grid grid-cols-3 gap-1.5" role="tablist">
+      @for (day of days; track day.id) {
+        <button
+          type="button"
+          role="tab"
+          class="rounded-md border px-1 py-2 text-center font-display text-base font-bold uppercase tracking-wide"
+          [class]="day.id === store.activeDay()
+            ? 'border-accent bg-accent text-accent-ink'
+            : 'border-line bg-surface-2 text-ink-dim'"
+          [attr.aria-selected]="day.id === store.activeDay()"
+          (click)="selectDay(day.id)"
+        >{{ day.label }}</button>
+      }
+    </div>
+
+    <div class="mt-2.5 flex items-baseline justify-between gap-2.5 text-[0.82rem] text-ink-dim">
+      <span><span class="font-semibold text-ink">{{ store.activeDaySpec().full }}</span> — {{ store.activeDaySpec().subtitle }}</span>
+      <span
+        class="min-w-17.5 text-right text-[0.74rem]"
+        [class.text-good]="store.status().kind === 'saved'"
+        [class.text-warn]="store.status().kind === 'saving' || store.status().kind === 'warn'"
+      >{{ store.status().text }}</span>
+    </div>
+  </header>
+
+  <main class="mt-4">
+    @for (ex of store.activeDaySpec().exercises; track ex.id) {
+      <app-exercise-card
+        [ex]="ex"
+        [sets]="store.setsFor(ex.id, ex.sets)"
+        [previousSets]="store.previousSetsFor(ex.id)"
+        [previousDate]="store.previous()?.date ?? null"
+        [loadingHistory]="store.loadingHistory()"
+        (setChanged)="onSetChanged(ex.id, $event)"
+        (restRequested)="onRestRequested($event)"
+      />
+    }
+  </main>
+
+  <footer class="mt-5 border-t border-line pt-3.5 text-center text-[0.74rem] text-ink-dim">
+    Los datos se guardan en la base de datos del servidor. Si no hay conexión, se guardan solo en este teléfono.
+  </footer>
+</div>
+
+<app-rest-timer />

@@ -1,0 +1,19 @@
+.animate-rest-flash {
+  animation: rest-flash 0.5s ease-in-out 2;
+}
+
+@keyframes rest-flash {
+  0%,
+  100% {
+    background-color: var(--color-surface);
+  }
+  50% {
+    background-color: var(--color-cat-glute-bg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rest-flash {
+    animation: none;
+  }
+}

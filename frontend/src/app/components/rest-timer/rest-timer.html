@@ -1,0 +1,47 @@
+<div
+  class="fixed inset-x-0 bottom-0 z-10 border-t border-line bg-surface px-4 pt-2.5 shadow-[0_-2px_10px_rgba(0,0,0,0.12)]"
+  [style.padding-bottom]="'calc(0.625rem + env(safe-area-inset-bottom))'"
+  [class.animate-rest-flash]="justFinished()"
+>
+  <div
+    class="h-0.5 -mt-2.5 mb-2.5 bg-accent transition-[width] duration-1000 ease-linear"
+    [style.width.%]="progressPercent()"
+  ></div>
+
+  <div class="mx-auto flex max-w-xl flex-wrap items-center justify-between gap-2.5">
+    <div class="flex gap-1.5">
+      @for (preset of [60, 90, 120]; track preset) {
+        <button
+          type="button"
+          class="rounded-md border border-line bg-surface-2 px-2 py-1.5 font-mono text-xs text-ink-dim"
+          (click)="startFor(preset)"
+        >
+          {{ preset }}s
+        </button>
+      }
+    </div>
+
+    <div class="flex flex-col items-center leading-tight">
+      <span class="text-[0.62rem] uppercase tracking-wide text-ink-dim">Descanso</span>
+      <span
+        class="font-mono text-xl font-semibold tabular-nums"
+        [class.text-accent]="justFinished()"
+      >{{ display() }}</span>
+    </div>
+
+    <div class="flex gap-1.5">
+      <button
+        type="button"
+        class="rounded-md border border-line bg-surface-2 px-3 py-2 font-display text-sm font-bold uppercase tracking-wide text-ink"
+        (click)="reset()"
+        aria-label="Reiniciar descanso"
+        title="Reiniciar"
+      >↺</button>
+      <button
+        type="button"
+        class="min-w-19.5 rounded-md border border-accent bg-accent px-3 py-2 font-display text-sm font-bold uppercase tracking-wide text-accent-ink"
+        (click)="toggle()"
+      >{{ toggleLabel() }}</button>
+    </div>
+  </div>
+</div>
